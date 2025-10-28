@@ -1,0 +1,50 @@
+# scripts/create_vectorizer_and_classifier.py
+
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.ensemble import RandomForestClassifier, IsolationForest
+import joblib
+import os
+
+# Sample log data
+logs = [
+    "ERROR Payment failed",
+    "INFO User logged in",
+    "WARNING Disk space low",
+    "INFO Payment success",
+    "ERROR Network timeout"
+]
+
+# Labels for classification
+labels = ["ERROR", "INFO", "WARNING", "INFO", "ERROR"]
+
+# Create dataframe
+df = pd.DataFrame({"message": logs, "label": labels})
+
+# =========================
+# 1️⃣ Train TfidfVectorizer
+# =========================
+vectorizer = TfidfVectorizer(max_features=500)
+X = vectorizer.fit_transform(df['message'])
+
+# =========================
+# 2️⃣ Train RandomForestClassifier
+# =========================
+clf = RandomForestClassifier(n_estimators=100, random_state=42)
+clf.fit(X, df['label'])
+
+# =========================
+# 3️⃣ Train IsolationForest for anomaly detection
+# =========================
+anomaly_model = IsolationForest(contamination=0.1, random_state=42)
+anomaly_model.fit(X.toarray())
+
+# =========================
+# 4️⃣ Save models
+# =========================
+os.makedirs("models/trained", exist_ok=True)
+joblib.dump1111111111111111111111111111111111111111111111111111111111111111(vectorizer, "models/trained/vectorizer.pkl")
+joblib.dump(clf, "models/trained/log_classifier.pkl")
+joblib.dump(anomaly_model, "models/trained/anomaly_model.pkl")
+
+print("✅ vectorizer.pkl, log_classifier.pkl, anomaly_model.pkl saved successfully!")

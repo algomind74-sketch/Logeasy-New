@@ -1,0 +1,29 @@
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.ensemble import IsolationForest
+import joblib
+import pandas as pd
+import os
+
+# Sample log messages
+logs = [
+    "ERROR Payment failed",
+    "INFO User logged in",
+    "WARNING Disk space low",
+    "INFO Payment success",
+    "ERROR Network timeout"
+]
+
+# Vectorize
+vectorizer = TfidfVectorizer(max_features=500)
+X = vectorizer.fit_transform(logs)
+
+# Train IsolationForest
+anomaly_model = IsolationForest(contamination=0.1, random_state=42)
+anomaly_model.fit(X.toarray())
+
+# Save model
+os.makedirs("models/trained", exist_ok=True)
+joblib.dump(anomaly_model, "models/trained/anomaly_model.pkl")
+joblib.dump(vectorizer, "models/trained/vectorizer.pkl")  # Reuse vectorizer
+
+print("Anomaly detector saved.")

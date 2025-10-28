@@ -1,0 +1,33 @@
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.ensemble import RandomForestClassifier
+import joblib
+import os
+
+# Sample data
+logs = [
+    "ERROR Payment failed",
+    "INFO User logged in",
+    "WARNING Disk space low",
+    "INFO Payment success",
+    "ERROR Network timeout"
+]
+labels = ["ERROR", "INFO", "WARNING", "INFO", "ERROR"]
+
+df = pd.DataFrame({"message": logs, "label": labels})
+
+# Vectorize text
+vectorizer = TfidfVectorizer(max_features=500)
+X = vectorizer.fit_transform(df['message'])
+y = df['label']
+
+# Train classifier
+clf = RandomForestClassifier(n_estimators=100, random_state=42)
+clf.fit(X, y)
+
+# Save model
+os.makedirs("models/trained", exist_ok=True)
+joblib.dump(clf, "models/trained/log_classifier.pkl")
+joblib.dump(vectorizer, "models/trained/vectorizer.pkl")
+
+print("Log classifier and vectorizer saved.")
