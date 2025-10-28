@@ -1,42 +1,37 @@
-from sqlalchemy.orm import Session
-from app.database.db_session import engine, SessionLocal, Base
-from app.database.models import Log
+from backend.app.database.db_session import SessionLocal, engine
+from backend.app.database.models import Base, Log
 from datetime import datetime
-import random
 
-# Sample log levels and messages
-LOG_LEVELS = ["INFO", "WARNING", "ERROR", "DEBUG"]
-SERVICES = ["AuthService", "PaymentService", "NetworkService"]
-
-SAMPLE_MESSAGES = [
-    "User logged in successfully",
-    "Payment transaction failed",
-    "Network timeout occurred",
-    "Disk space running low",
-    "New user registered",
-    "API request failed",
-    "Database connection error",
-    "Scheduled job completed"
-]
-
-# Create tables if not exists
+# ✅ Create all tables if they don't exist
 Base.metadata.create_all(bind=engine)
 
-def seed_logs(db: Session, num_logs: int = 50):
-    for _ in range(num_logs):
-        level = random.choice(LOG_LEVELS)
-        service = random.choice(SERVICES)
-        message = f"[{service}] {random.choice(SAMPLE_MESSAGES)}"
-        log_entry = Log(
-            level=level,
-            message=message,
-            created_at=datetime.utcnow()
-        )
-        db.add(log_entry)
-    db.commit()
-    print(f"✅ Seeded {num_logs} logs into the database")
+# ✅ Example seed data
+sample_logs = [
+    Log(level="INFO", message="Server started successfully", created_at=datetime(2025, 10, 20, 10, 0)),
+    Log(level="WARNING", message="High memory usage detected in Payments service", created_at=datetime(2025, 10, 21, 12, 30)),
+    Log(level="ERROR", message="Database connection timeout in Auth service", created_at=datetime(2025, 10, 22, 14, 15)),
+    Log(level="INFO", message="New user registration completed", created_at=datetime(2025, 10, 23, 9, 45)),
+    Log(level="ERROR", message="Payment gateway request failed", created_at=datetime(2025, 10, 24, 17, 10)),
+]
+
+def seed_database():
+    """Populate the database with initial sample logs."""
+    db = SessionLocal()
+    try:
+        # Check if data already exists
+        existing_logs = db.query(Log).count()
+        if existing_logs == 0:
+            db.add_all(sample_logs)
+            db.commit()
+            print("✅ Database seeded with sample logs.")
+        else:
+            print("ℹ️ Database already contains logs — skipping seeding.")
+    except Exception as e:
+        print("❌ Error seeding database:", e)
+        db.rollback()
+    finally:
+        db.close()
+
 
 if __name__ == "__main__":
-    db = SessionLocal()
-    seed_logs(db, num_logs=100)  # Seed 100 sample logs
-    db.close()
+    seed_database()

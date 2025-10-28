@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    container_name: logeasy-backend
+    command: uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: logeasy-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    command: npm start
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:14
+    container_name: logeasy-db
+    restart: always
+    environment:
+      POSTGRES_USER: logeasy_user
+      POSTGRES_PASSWORD: logeasy_pass
+      POSTGRES_DB: logeasy_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
