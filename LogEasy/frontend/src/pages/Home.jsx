@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const ReportViewer = () => {
-  const [reports, setReports] = useState([]); // ✅ Start with empty array
+  const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -11,7 +11,6 @@ const ReportViewer = () => {
       .then((res) => {
         console.log("Fetched reports:", res.data);
 
-        // ✅ Handle if response is an object or not an array
         const data = Array.isArray(res.data)
           ? res.data
           : res.data?.reports || [];
@@ -51,12 +50,12 @@ const ReportViewer = () => {
         <ul className="space-y-2">
           {reports.map((r, i) => (
             <li
-              key={i}
+              key={r.id || i}
               className="flex justify-between items-center bg-gray-100 p-3 rounded-md shadow-sm"
             >
-              <span>{r}</span>
+              <span>{r.name}</span>
               <button
-                onClick={() => downloadReport(r)}
+                onClick={() => downloadReport(r.name)}
                 className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition"
               >
                 Download
