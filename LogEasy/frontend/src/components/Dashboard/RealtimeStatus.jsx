@@ -85,4 +85,4 @@ const StatusCard = ({ title, value, color }) => (
   </div>
 );
 
-export default Real
+export default RealtimeStatus;
