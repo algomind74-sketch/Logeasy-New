@@ -5,8 +5,13 @@ const ReportViewer = () => {
   const [reports, setReports] = useState([]);
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/reports/list")
-      .then((res) => setReports(res.data))
+    axios
+      .get("http://127.0.0.1:8000/reports/list")
+      .then((res) => {
+        console.log("Fetched reports:", res.data);
+        // backend sends { reports: [...] }
+        setReports(res.data.reports || []);
+      })
       .catch((err) => console.error("Error fetching reports:", err));
   }, []);
 
@@ -28,18 +33,24 @@ const ReportViewer = () => {
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">📄 Generated Reports</h2>
+
       {reports.length === 0 ? (
         <p>No reports found. Try generating one.</p>
       ) : (
         <ul className="space-y-2">
           {reports.map((r, i) => (
             <li
-              key={i}
+              key={r.id || i}
               className="flex justify-between items-center bg-gray-100 p-3 rounded-md shadow-sm"
             >
-              <span>{r}</span>
+              <span>
+                <strong>{r.name}</strong>{" "}
+                <small className="text-gray-500">
+                  ({new Date(r.created_at).toLocaleDateString()})
+                </small>
+              </span>
               <button
-                onClick={() => downloadReport(r)}
+                onClick={() => downloadReport(r.name)}
                 className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition"
               >
                 Download
