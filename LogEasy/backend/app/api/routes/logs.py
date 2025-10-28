@@ -1,3 +1,6 @@
+from fastapi import APIRouter
+
+router = APIRouter()
 @router.get("/stats")
 async def get_log_stats():
     logs = get_all_logs_from_db()  # from crud.py
