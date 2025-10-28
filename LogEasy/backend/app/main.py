@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.app.api.routes import logs, insights, reports
+from app.api.routes import logs, insights, reports
 
 # ✅ Create FastAPI app instance
 app = FastAPI(

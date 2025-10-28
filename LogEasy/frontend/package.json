@@ -5,10 +5,10 @@
   "description": "LogEasy Frontend - AI-powered Log Analytics Dashboard",
   "author": "LogEasy Team",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint src --ext .js,.jsx"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "dependencies": {
     "axios": "^1.7.2",
@@ -17,20 +17,12 @@
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.22.0",
-    "socket.io-client": "^4.7.5"
+    "react-scripts": "^5.0.1",
+    "socket.io-client": "^4.7.5",
+    "tailwindcss": "^3.4.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.2",
     "eslint": "^8.57.0",
-    "eslint-plugin-react": "^7.33.2",
-    "tailwindcss": "^3.4.4",
-    "vite": "^5.3.1"
-  },
-  "keywords": [
-    "AI",
-    "Log Analytics",
-    "FastAPI",
-    "React",
-    "Dashboard"
-  ]
+    "eslint-plugin-react": "^7.33.2"
+  }
 }
