@@ -7,6 +7,7 @@ import Compliance from "./pages/Compliance";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import LogsTable from "./components/Dashboard/LogsTable"; // ✅ Corrected import (case-sensitive)
+import AllInsights from "./components/Dashboard/AIInsights.jsx";
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -30,6 +31,7 @@ function App() {
               <Route path="/reports" element={<Reports />} />
               <Route path="/compliance" element={<Compliance />} />
               <Route path="/logs" element={<LogsTable />} /> {/* ✅ Added Logs page */}
+              <Route path="/insights" element={<AllInsights />} />
             </Routes>
           </main>
         </div>

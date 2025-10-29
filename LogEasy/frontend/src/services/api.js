@@ -16,18 +16,18 @@ export const uploadLog = async (file) => {
   return api.post("/logs/upload", formData);
 };
 
-// Fetch all logs (if exists)
+// Fetch all logs
 export const getLogs = async () => api.get("/logs");
 
 // ✅ Fetch log statistics
 export const getLogStats = async () => api.get("/logs/stats");
 
 // ---------------------- 🤖 AI Insights ----------------------
-// The backend route shown was `/ai/`
-export const getInsights = async () => api.get("/ai/");
+// ✅ Corrected path — should be /ai/insights, not just /ai/
+export const getInsights = async () => api.get("/ai/insights");
 
 // ---------------------- 📊 Reports ----------------------
-// These match the backend swagger exactly:
+// These match the backend swagger exactly
 export const generateReport = async () => api.get("/reports/generate");
 export const getReports = async () => api.get("/reports/list");
 

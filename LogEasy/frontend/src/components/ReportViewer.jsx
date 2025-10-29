@@ -4,61 +4,69 @@ import axios from "axios";
 const ReportViewer = () => {
   const [reports, setReports] = useState([]);
 
+  // Fetch list of reports
   useEffect(() => {
     axios
       .get("http://127.0.0.1:8000/reports/list")
-      .then((res) => {
-        console.log("Fetched reports:", res.data);
-        // backend sends { reports: [...] }
-        setReports(res.data.reports || []);
+      .then((response) => {
+        setReports(response.data.reports);
       })
-      .catch((err) => console.error("Error fetching reports:", err));
+      .catch((error) => {
+        console.error("Error fetching reports:", error);
+      });
   }, []);
 
+  // Function to download PDF report
   const downloadReport = (filename) => {
     axios({
-      url: `http://127.0.0.1:8000/reports/download/${filename}`,
+      url: `http://127.0.0.1:8000/reports/download/${encodeURIComponent(filename)}`,
       method: "GET",
-      responseType: "blob",
-    }).then((response) => {
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", filename);
-      document.body.appendChild(link);
-      link.click();
-    });
+      responseType: "blob", // important for binary data
+    })
+      .then((response) => {
+        const blob = new Blob([response.data], { type: "application/pdf" });
+        const url = window.URL.createObjectURL(blob);
+
+        // Clean and safe filename
+        const safeFilename = `${filename.replace(/\s+/g, "_")}.pdf`;
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", safeFilename);
+        document.body.appendChild(link);
+        link.click();
+
+        link.remove();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Error downloading report:", error);
+        alert("Failed to download report. Check backend connection.");
+      });
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">📄 Generated Reports</h2>
-
-      {reports.length === 0 ? (
-        <p>No reports found. Try generating one.</p>
-      ) : (
-        <ul className="space-y-2">
-          {reports.map((r, i) => (
-            <li
-              key={r.id || i}
-              className="flex justify-between items-center bg-gray-100 p-3 rounded-md shadow-sm"
-            >
-              <span>
-                <strong>{r.name}</strong>{" "}
-                <small className="text-gray-500">
-                  ({new Date(r.created_at).toLocaleDateString()})
-                </small>
-              </span>
-              <button
-                onClick={() => downloadReport(r.name)}
-                className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition"
-              >
-                Download
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="p-8">
+      <h2 className="text-2xl font-bold mb-6">📄 Generated Reports</h2>
+      {reports.map((report) => (
+        <div
+          key={report.id}
+          className="flex justify-between items-center bg-gray-50 p-4 rounded-lg shadow-sm mb-3"
+        >
+          <div>
+            <h3 className="font-semibold text-lg">{report.name}</h3>
+            <p className="text-sm text-gray-500">
+              Created on: {report.created_at}
+            </p>
+          </div>
+          <button
+            onClick={() => downloadReport(report.name)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+          >
+            Download
+          </button>
+        </div>
+      ))}
     </div>
   );
 };
