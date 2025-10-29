@@ -5,6 +5,7 @@ import Reports from "./pages/Reports";
 import Home from "./pages/Home";
 import Compliance from "./pages/Compliance";
 import Sidebar from "./components/Sidebar";
+import Settings from "./pages/Settings"; 
 import Navbar from "./components/Navbar";
 import LogsTable from "./components/Dashboard/LogsTable"; // ✅ Corrected import (case-sensitive)
 import AllInsights from "./components/Dashboard/AIInsights.jsx";
@@ -32,6 +33,7 @@ function App() {
               <Route path="/compliance" element={<Compliance />} />
               <Route path="/logs" element={<LogsTable />} /> {/* ✅ Added Logs page */}
               <Route path="/insights" element={<AllInsights />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </main>
         </div>
