@@ -1,40 +1,31 @@
 import React from "react";
-import { Menu } from "lucide-react"; // for hamburger icon
+import { Menu } from "lucide-react";
 
 const Navbar = ({ onMenuClick }) => {
   return (
-    <nav className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 md:px-8 py-4 flex justify-between items-center shadow-lg sticky top-0 z-30">
-      {/* 🔹 Left Section — Menu Button (mobile) + Logo */}
-      <div className="flex items-center space-x-3">
-        {/* Hamburger icon (only visible on mobile) */}
+    <nav className="sticky top-0 z-40 bg-white shadow-sm border-b border-gray-200 flex justify-between items-center px-6 py-3">
+      {/* Left Section */}
+      <div className="flex items-center gap-3">
         <button
+          className="md:hidden p-2 rounded-md hover:bg-gray-100"
           onClick={onMenuClick}
-          className="md:hidden p-2 rounded-md hover:bg-blue-700 focus:outline-none transition"
         >
-          <Menu size={24} />
+          <Menu size={22} className="text-gray-700" />
         </button>
-
-        {/* Logo */}
-        <div className="flex items-center space-x-2">
-          <img
-            src="/logo192.png" // change path if needed
-            alt="LogEasy"
-            className="h-8 w-8"
-          />
-          <h1 className="text-2xl font-bold tracking-wide">LogEasy</h1>
-        </div>
+        <h1 className="text-2xl font-bold text-blue-700 tracking-wide">
+          LogEasy
+        </h1>
       </div>
 
-      {/* 🔹 Right Section — Nav Buttons */}
-      <div className="hidden md:flex space-x-6 items-center">
-        <button className="hover:text-blue-200 transition duration-200 font-medium">
+      {/* Right Buttons */}
+      <div className="flex items-center gap-4">
+        <button className="text-gray-600 hover:text-blue-700 transition">
           Docs
         </button>
-        <button className="hover:text-blue-200 transition duration-200 font-medium">
+        <button className="text-gray-600 hover:text-blue-700 transition">
           Support
         </button>
-
-        <button className="bg-white text-blue-700 px-4 py-2 rounded-md font-semibold hover:bg-blue-100 transition duration-200 shadow-sm">
+        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition">
           Logout
         </button>
       </div>

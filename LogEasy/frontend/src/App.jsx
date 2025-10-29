@@ -13,16 +13,16 @@ function App() {
   return (
     <Router>
       <div className="flex h-screen bg-gray-50 overflow-hidden">
-        {/* Sidebar */}
+        {/* Sidebar (fixed on md+, sliding on mobile) */}
         <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col">
-          {/* Navbar with Sidebar toggle */}
-          <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
+        {/* Main content area */}
+        <div className="flex-1 flex flex-col md:ml-64">
+          {/* Navbar - the hamburger will toggle the sidebar on mobile */}
+          <Navbar onMenuClick={() => setIsSidebarOpen((s) => !s)} />
 
-          {/* Main page area */}
-          <main className="p-4 md:p-6 overflow-y-auto flex-1">
+          {/* Page content */}
+          <main className="flex-1 overflow-y-auto p-4 md:p-6">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/dashboard" element={<Dashboard />} />

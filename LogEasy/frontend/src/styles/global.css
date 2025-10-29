@@ -1,4 +1,6 @@
-
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 /* 🌐 Global Styles for LogEasy Dashboard */
 
 /* ========== RESET & BASE ========== */

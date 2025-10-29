@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Base URL of your FastAPI backend
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "http://127.0.0.1:8000";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -16,18 +16,20 @@ export const uploadLog = async (file) => {
   return api.post("/logs/upload", formData);
 };
 
-// Fetch all logs
+// Fetch all logs (if exists)
 export const getLogs = async () => api.get("/logs");
 
-// Fetch log statistics (✅ your existing function)
+// ✅ Fetch log statistics
 export const getLogStats = async () => api.get("/logs/stats");
 
 // ---------------------- 🤖 AI Insights ----------------------
-export const getInsights = async () => api.get("/ai/insights");
+// The backend route shown was `/ai/`
+export const getInsights = async () => api.get("/ai/");
 
 // ---------------------- 📊 Reports ----------------------
-export const generateReport = async () => api.post("/reports/generate");
-export const getReports = async () => api.get("/reports");
+// These match the backend swagger exactly:
+export const generateReport = async () => api.get("/reports/generate");
+export const getReports = async () => api.get("/reports/list");
 
 // ---------------------- ⚙️ System ----------------------
 export const getSystemHealth = async () => api.get("/system/health");
