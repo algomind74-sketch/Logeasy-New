@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query
 
-router = APIRouter()
+router = APIRouter()  # no prefix here (main.py adds /logs)
 
 # ✅ 1️⃣ /logs/stats – analytics data for dashboard
 @router.get("/stats")
@@ -40,9 +40,11 @@ async def get_logs():
     return logs
 
 
-# ✅ 3️⃣ /logs/search – filter logs by keyword (message, service, level)
+# ✅ 3️⃣ /logs/search – filter logs by keyword
 @router.get("/search")
-async def search_logs(keyword: str = Query(None, description="Keyword to filter logs")):
+async def search_logs(
+    keyword: str = Query(None, description="Keyword to filter logs (service, level, or message)")
+):
     all_logs = [
         {"timestamp": "2025-10-29 09:00:00", "service": "Auth", "level": "INFO", "message": "User login successful"},
         {"timestamp": "2025-10-29 09:05:00", "service": "Payments", "level": "ERROR", "message": "Payment gateway timeout"},
@@ -51,12 +53,11 @@ async def search_logs(keyword: str = Query(None, description="Keyword to filter 
     ]
 
     if not keyword:
-        return all_logs  # if no search keyword, return all logs
+        return all_logs
 
     keyword = keyword.lower()
     filtered_logs = [
-        log
-        for log in all_logs
+        log for log in all_logs
         if keyword in log["message"].lower()
         or keyword in log["service"].lower()
         or keyword in log["level"].lower()

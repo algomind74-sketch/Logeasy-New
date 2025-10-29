@@ -12,6 +12,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import LogsTable from "../components/Dashboard/LogsTable"; // ✅ import LogsTable
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -96,6 +97,14 @@ const Dashboard = () => {
             <Bar dataKey="errors" fill="#3b82f6" barSize={40} />
           </BarChart>
         </ResponsiveContainer>
+      </div>
+
+      {/* ====== Logs Table (Search + Filter) ====== */}
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+          🔍 Recent Logs (Search & Filter)
+        </h2>
+        <LogsTable /> {/* ✅ Search bar + table now shown here */}
       </div>
     </div>
   );

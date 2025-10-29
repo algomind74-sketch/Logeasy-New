@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Compliance from "./pages/Compliance";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
+import LogsTable from "./components/Dashboard/LogsTable"; // ✅ Corrected import (case-sensitive)
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -18,7 +19,7 @@ function App() {
 
         {/* Main content area */}
         <div className="flex-1 flex flex-col md:ml-64">
-          {/* Navbar - the hamburger will toggle the sidebar on mobile */}
+          {/* Navbar */}
           <Navbar onMenuClick={() => setIsSidebarOpen((s) => !s)} />
 
           {/* Page content */}
@@ -28,6 +29,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/compliance" element={<Compliance />} />
+              <Route path="/logs" element={<LogsTable />} /> {/* ✅ Added Logs page */}
             </Routes>
           </main>
         </div>
