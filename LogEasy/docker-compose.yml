@@ -4,17 +4,24 @@ services:
   backend:
     build: ./backend
     container_name: logeasy-backend
+    # --- START CRITICAL CHANGE ---
+    # Load environment variables from .env (which must contain DB connection details)
+    env_file:
+      - ./.env
+    # --- END CRITICAL CHANGE ---
     command: uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/app
     environment:
+      # Ensure you have set DB_HOST=db in your .env file
       - PYTHONUNBUFFERED=1
     depends_on:
       - db
 
   frontend:
+    # ... (no change needed here)
     build: ./frontend
     container_name: logeasy-frontend
     ports:
@@ -26,6 +33,7 @@ services:
       - backend
 
   db:
+    # ... (no change needed here)
     image: postgres:14
     container_name: logeasy-db
     restart: always
