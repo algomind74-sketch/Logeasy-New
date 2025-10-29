@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.routes import logs, insights, reports
+from app.api.routes import logs, insights, reports, compliance  # ✅ Added compliance
 
 # ✅ Create FastAPI app instance only once
 app = FastAPI(
@@ -12,7 +12,7 @@ app = FastAPI(
 # ✅ Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Allow all origins for local development
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -22,6 +22,7 @@ app.add_middleware(
 app.include_router(logs.router, prefix="/logs", tags=["Logs"])
 app.include_router(insights.router, prefix="/ai", tags=["AI Insights"])
 app.include_router(reports.router, prefix="/reports", tags=["Reports"])
+app.include_router(compliance.router, prefix="/compliance", tags=["Compliance"])  # ✅ Added
 
 # ✅ Root endpoint
 @app.get("/")

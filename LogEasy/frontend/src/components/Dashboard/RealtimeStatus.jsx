@@ -15,11 +15,10 @@ const RealtimeStatus = () => {
       const response = await axios.get("http://127.0.0.1:8000/logs/stats");
       const data = response.data;
 
-      // 🧠 Mock structure adjustment
       setStats({
         total_logs:
           (data?.error_trend?.reduce((a, b) => a + (b.error_count || 0), 0) ||
-            0) + 100, // just demo sum
+            0) + 100,
         error_count:
           data?.service_error_count?.reduce(
             (a, b) => a + (b.errors || 0),
@@ -34,7 +33,6 @@ const RealtimeStatus = () => {
     }
   };
 
-  // Fetch every 5 seconds
   useEffect(() => {
     fetchStats();
     const interval = setInterval(fetchStats, 5000);
@@ -42,46 +40,54 @@ const RealtimeStatus = () => {
   }, []);
 
   return (
-    <div className="bg-white p-4 rounded-2xl shadow-md">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">
-        Realtime System Status
-      </h2>
+    <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl shadow-sm border border-gray-200 transition-all hover:shadow-md">
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+          ⚡ Realtime System Status
+        </h2>
+        <span className="text-sm text-gray-500">
+          ⏱ {stats.last_update || "Fetching..."}
+        </span>
+      </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <StatusCard
           title="Total Logs"
           value={stats.total_logs}
-          color="text-blue-600"
+          color="bg-blue-50 text-blue-700 border-blue-200"
+          icon="📁"
         />
         <StatusCard
           title="Errors"
           value={stats.error_count}
-          color="text-red-600"
+          color="bg-red-50 text-red-700 border-red-200"
+          icon="❌"
         />
         <StatusCard
           title="Warnings"
           value={stats.warning_count}
-          color="text-yellow-600"
+          color="bg-yellow-50 text-yellow-700 border-yellow-200"
+          icon="⚠️"
         />
         <StatusCard
           title="Info"
           value={stats.info_count}
-          color="text-green-600"
+          color="bg-green-50 text-green-700 border-green-200"
+          icon="ℹ️"
         />
       </div>
-
-      <p className="text-sm text-gray-500 mt-4">
-        ⏱ Last Updated: {stats.last_update || "Fetching..."}
-      </p>
     </div>
   );
 };
 
-// Small reusable card component
-const StatusCard = ({ title, value, color }) => (
-  <div className="flex flex-col items-center justify-center border rounded-lg p-3 shadow-sm bg-gray-50">
-    <h3 className="text-sm font-medium text-gray-700">{title}</h3>
-    <p className={`text-lg font-bold ${color}`}>{value}</p>
+// 💡 Modernized status card component
+const StatusCard = ({ title, value, color, icon }) => (
+  <div
+    className={`flex flex-col justify-center items-center rounded-xl border ${color} p-4 shadow-sm hover:shadow-md transition-transform transform hover:-translate-y-1`}
+  >
+    <div className="text-2xl">{icon}</div>
+    <h3 className="text-sm font-medium text-gray-600 mt-1">{title}</h3>
+    <p className="text-xl font-bold">{value}</p>
   </div>
 );
 

@@ -6,7 +6,6 @@ const LogsTable = () => {
   const [filter, setFilter] = useState("ALL");
   const [loading, setLoading] = useState(true);
 
-  // Fetch logs from backend
   useEffect(() => {
     const fetchLogs = async () => {
       try {
@@ -21,21 +20,28 @@ const LogsTable = () => {
     fetchLogs();
   }, []);
 
-  // Filter logs based on level
   const filteredLogs =
     filter === "ALL" ? logs : logs.filter((log) => log.level === filter);
 
-  if (loading) return <div className="text-gray-600">Loading logs...</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center text-gray-500 py-8">
+        Loading logs...
+      </div>
+    );
 
   return (
-    <div className="bg-white p-4 rounded-2xl shadow-md">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-gray-800">System Logs</h2>
+    <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-2xl shadow-sm border border-gray-200 transition-all hover:shadow-md">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 gap-3">
+        <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+          🧾 System Logs
+        </h2>
 
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-1 text-gray-700 focus:outline-none"
+          className="border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
         >
           <option value="ALL">All</option>
           <option value="INFO">Info</option>
@@ -44,32 +50,38 @@ const LogsTable = () => {
         </select>
       </div>
 
+      {/* Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full table-auto border-collapse">
+        <table className="min-w-full text-sm border-collapse">
           <thead>
-            <tr className="bg-gray-100 text-gray-700 uppercase text-sm">
-              <th className="px-4 py-2 text-left">Timestamp</th>
-              <th className="px-4 py-2 text-left">Service</th>
-              <th className="px-4 py-2 text-left">Level</th>
-              <th className="px-4 py-2 text-left">Message</th>
+            <tr className="bg-blue-50 text-blue-700 text-left font-semibold">
+              <th className="px-4 py-3 border-b border-gray-200">Timestamp</th>
+              <th className="px-4 py-3 border-b border-gray-200">Service</th>
+              <th className="px-4 py-3 border-b border-gray-200">Level</th>
+              <th className="px-4 py-3 border-b border-gray-200">Message</th>
             </tr>
           </thead>
+
           <tbody>
             {filteredLogs.map((log, index) => (
               <tr
                 key={index}
-                className={`border-b text-sm ${
+                className={`transition hover:bg-gray-50 ${
                   log.level === "ERROR"
-                    ? "bg-red-50"
+                    ? "bg-red-50/70"
                     : log.level === "WARNING"
-                    ? "bg-yellow-50"
-                    : "bg-white"
+                    ? "bg-yellow-50/70"
+                    : ""
                 }`}
               >
-                <td className="px-4 py-2">{log.timestamp || log.created_at}</td>
-                <td className="px-4 py-2">{log.service || "Unknown"}</td>
+                <td className="px-4 py-2 border-b border-gray-100 text-gray-700">
+                  {log.timestamp || log.created_at || "--"}
+                </td>
+                <td className="px-4 py-2 border-b border-gray-100 text-gray-700">
+                  {log.service || "Unknown"}
+                </td>
                 <td
-                  className={`px-4 py-2 font-semibold ${
+                  className={`px-4 py-2 border-b border-gray-100 font-semibold ${
                     log.level === "ERROR"
                       ? "text-red-600"
                       : log.level === "WARNING"
@@ -79,22 +91,30 @@ const LogsTable = () => {
                 >
                   {log.level}
                 </td>
-                <td className="px-4 py-2">{log.message}</td>
+                <td className="px-4 py-2 border-b border-gray-100 text-gray-700">
+                  {log.message}
+                </td>
               </tr>
             ))}
+
             {filteredLogs.length === 0 && (
               <tr>
                 <td
                   colSpan="4"
-                  className="text-center py-4 text-gray-500 italic"
+                  className="text-center py-6 text-gray-500 italic"
                 >
-                  No logs found for this filter
+                  No logs found for this filter.
                 </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
+
+      {/* Footer */}
+      <p className="text-xs text-gray-400 mt-4">
+        Showing {filteredLogs.length} of {logs.length} total logs.
+      </p>
     </div>
   );
 };
