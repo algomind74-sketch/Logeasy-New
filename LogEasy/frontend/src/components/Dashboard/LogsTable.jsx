@@ -4,8 +4,11 @@ import axios from "axios";
 const LogsTable = () => {
   const [logs, setLogs] = useState([]);
   const [filter, setFilter] = useState("ALL");
+  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
+  // 🔹 Fetch all logs initially
   useEffect(() => {
     const fetchLogs = async () => {
       try {
@@ -13,6 +16,7 @@ const LogsTable = () => {
         setLogs(response.data || []);
       } catch (error) {
         console.error("Error fetching logs:", error);
+        setError("Failed to load logs.");
       } finally {
         setLoading(false);
       }
@@ -20,6 +24,28 @@ const LogsTable = () => {
     fetchLogs();
   }, []);
 
+  // 🔹 Handle search
+  const handleSearch = async () => {
+    setLoading(true);
+    try {
+      if (search.trim() === "") {
+        const response = await axios.get("http://127.0.0.1:8000/logs");
+        setLogs(response.data || []);
+      } else {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/logs/search?keyword=${search}`
+        );
+        setLogs(response.data || []);
+      }
+    } catch (error) {
+      console.error("Error searching logs:", error);
+      setError("Search failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔹 Filter by log level
   const filteredLogs =
     filter === "ALL" ? logs : logs.filter((log) => log.level === filter);
 
@@ -38,17 +64,38 @@ const LogsTable = () => {
           🧾 System Logs
         </h2>
 
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-        >
-          <option value="ALL">All</option>
-          <option value="INFO">Info</option>
-          <option value="WARNING">Warning</option>
-          <option value="ERROR">Error</option>
-        </select>
+        <div className="flex gap-2">
+          {/* 🔍 Search bar */}
+          <input
+            type="text"
+            placeholder="Search logs..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+          <button
+            onClick={handleSearch}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            Search
+          </button>
+
+          {/* ⚙️ Filter dropdown */}
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          >
+            <option value="ALL">All</option>
+            <option value="INFO">Info</option>
+            <option value="WARNING">Warning</option>
+            <option value="ERROR">Error</option>
+          </select>
+        </div>
       </div>
+
+      {/* ⚠️ Error message */}
+      {error && <p className="text-red-500 mb-2">{error}</p>}
 
       {/* Table */}
       <div className="overflow-x-auto">

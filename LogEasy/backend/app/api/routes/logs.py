@@ -1,8 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 
 router = APIRouter()
 
-# ✅ 1️⃣ /logs/stats – for analytics graphs
+# ✅ 1️⃣ /logs/stats – analytics data for dashboard
 @router.get("/stats")
 async def get_log_stats():
     error_trend = [
@@ -20,32 +20,46 @@ async def get_log_stats():
     ]
 
     return {
+        "total_logs": 200,
+        "error_logs": 72,
+        "active_users": 15,
         "error_trend": error_trend,
         "service_error_count": service_error_count,
     }
 
 
-# ✅ 2️⃣ /logs – for table display in LogsTable.jsx
-@router.get("")
+# ✅ 2️⃣ /logs – full log list
+@router.get("/")
 async def get_logs():
     logs = [
-        {
-            "timestamp": "2025-10-29 09:00:00",
-            "service": "Auth",
-            "level": "INFO",
-            "message": "User login successful",
-        },
-        {
-            "timestamp": "2025-10-29 09:05:00",
-            "service": "Payments",
-            "level": "ERROR",
-            "message": "Payment gateway timeout",
-        },
-        {
-            "timestamp": "2025-10-29 09:10:00",
-            "service": "Orders",
-            "level": "WARNING",
-            "message": "Order processing delayed",
-        },
+        {"timestamp": "2025-10-29 09:00:00", "service": "Auth", "level": "INFO", "message": "User login successful"},
+        {"timestamp": "2025-10-29 09:05:00", "service": "Payments", "level": "ERROR", "message": "Payment gateway timeout"},
+        {"timestamp": "2025-10-29 09:10:00", "service": "Orders", "level": "WARNING", "message": "Order processing delayed"},
+        {"timestamp": "2025-10-29 09:15:00", "service": "Payments", "level": "ERROR", "message": "Transaction declined"},
     ]
     return logs
+
+
+# ✅ 3️⃣ /logs/search – filter logs by keyword (message, service, level)
+@router.get("/search")
+async def search_logs(keyword: str = Query(None, description="Keyword to filter logs")):
+    all_logs = [
+        {"timestamp": "2025-10-29 09:00:00", "service": "Auth", "level": "INFO", "message": "User login successful"},
+        {"timestamp": "2025-10-29 09:05:00", "service": "Payments", "level": "ERROR", "message": "Payment gateway timeout"},
+        {"timestamp": "2025-10-29 09:10:00", "service": "Orders", "level": "WARNING", "message": "Order processing delayed"},
+        {"timestamp": "2025-10-29 09:15:00", "service": "Payments", "level": "ERROR", "message": "Transaction declined"},
+    ]
+
+    if not keyword:
+        return all_logs  # if no search keyword, return all logs
+
+    keyword = keyword.lower()
+    filtered_logs = [
+        log
+        for log in all_logs
+        if keyword in log["message"].lower()
+        or keyword in log["service"].lower()
+        or keyword in log["level"].lower()
+    ]
+
+    return filtered_logs
