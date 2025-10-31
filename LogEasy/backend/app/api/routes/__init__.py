@@ -1,1 +1,1 @@
-from . import logs, insights, reports
+from . import logs, insights, reports, compliance, Settings
